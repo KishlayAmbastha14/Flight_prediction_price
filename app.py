@@ -1,26 +1,49 @@
-# import streamlit as st
-# st.html(
-#     # "<p><span style='text-decoration: line-through double red;'>Oops</span>!</p>
-# )
-
-
-
 import streamlit as st
 import pickle
 import pandas as pd
 import requests
 
 
-import os
-if not os.path.exists("flights.pkl"):
-    url = "https://drive.google.com/file/d/1r2hO9zENE6CVSS9JAPmL1NJ64bAh9rrc/view?usp=drive_link"
+# import os
+# if not os.path.exists("flights.pkl"):
+#     url = "https://drive.google.com/file/d/1r2hO9zENE6CVSS9JAPmL1NJ64bAh9rrc/view?usp=drive_link"
+#     r = requests.get(url)
+#     with open("flights.pkl", "wb") as f:
+#         f.write(r.content)
+
+
+# with open('flights.pkl', 'rb') as f:
+#     result = pickle.load(f)
+
+# ---------------------------
+def download_pickle(file_id, destination):
+    """
+    Downloads a file from Google Drive using the file ID.
+    """
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
     r = requests.get(url)
-    with open("flights.pkl", "wb") as f:
-        f.write(r.content)
+    if r.status_code == 200:
+        with open(destination, "wb") as f:
+            f.write(r.content)
+    else:
+        st.error("Failed to download the model file. Please check the file ID or internet connection.")
+        st.stop()
 
+# ---------------------------
+# Load the model
+# ---------------------------
+PICKLE_FILE = "flights.pkl"
+FILE_ID = "1r2hO9zENE6CVSS9JAPmL1NJ64bAh9rrc"  # Replace with your file ID
 
-with open('flights.pkl', 'rb') as f:
-    result = pickle.load(f)
+if not os.path.exists(PICKLE_FILE):
+    download_pickle(FILE_ID, PICKLE_FILE)
+
+try:
+    with open(PICKLE_FILE, 'rb') as f:
+        result = pickle.load(f)
+except Exception as e:
+    st.error(f"Failed to load the model. Error: {e}")
+    st.stop()
 
 
 
