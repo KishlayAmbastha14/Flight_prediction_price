@@ -8,6 +8,15 @@
 import streamlit as st
 import pickle
 import pandas as pd
+import requests
+
+
+import os
+if not os.path.exists("flights.pkl"):
+    url = "https://drive.google.com/file/d/1r2hO9zENE6CVSS9JAPmL1NJ64bAh9rrc/view?usp=drive_link"
+    r = requests.get(url)
+    with open("flights.pkl", "wb") as f:
+        f.write(r.content)
 
 
 with open('flights.pkl', 'rb') as f:
