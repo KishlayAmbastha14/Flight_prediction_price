@@ -2,7 +2,7 @@ import streamlit as st
 import pickle
 import pandas as pd
 import requests
-
+import os
 
 # import os
 # if not os.path.exists("flights.pkl"):
