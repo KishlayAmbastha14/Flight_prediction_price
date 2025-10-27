@@ -17,8 +17,8 @@ app.add_middleware(
 )
 # -
 
-with open("flights_new.pkl","rb") as f:
-    model = pickle.load(f)
+# with open("flights_new.pkl","rb") as f:
+#     model = pickle.load(f)
 
 @app.get("/")
 async def flights():
