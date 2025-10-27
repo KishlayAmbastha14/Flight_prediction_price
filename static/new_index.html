@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flight Fare Predictor</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://unpkg.com/@tailwindcss/ui/dist/tailwind-ui.min.css">
+
+  <style>
+    /* NEW THEME CHANGES:
+      1. Updated .glass for better backdrop-filter effect on dark bg.
+      2. Replaced .jiggle with a smoother .pop-in animation.
+    */
+    .glass {
+      background: rgba(255, 255, 255, 0.5); /* Was 0.7 */
+      backdrop-filter: blur(10px);        /* Was 6px */
+      -webkit-backdrop-filter: blur(10px); /* Added for cross-browser */
+    }
+    
+    .pop-in {
+      animation: pop-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    }
+
+    @keyframes pop-in {
+      0% {
+        transform: scale(0.9);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-400 via-indigo-500 to-purple-600 text-slate-800">
+
+  <div class="max-w-6xl mx-auto p-6 lg:p-12">
+
+    <header class="flex items-center justify-between mb-8">
+      <div class="flex items-center gap-3">
+        <div class="rounded-full bg-indigo-600 text-white p-3 shadow-lg">
+          ✈️
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-white shadow-sm">Flight Fare Predictor</h1>
+          <p class="text-sm text-indigo-100">Predict ticket fare using your trained ML model</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex gap-6 items-center text-sm text-white font-medium">
+        <a class="hover:underline" href="#">Home</a>
+        <a class="hover:underline" href="#how">How it works</a>
+        <a class="hover:underline" href="#about">About</a>
+      </nav>
+    </header>
+
+    <main class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+
+      <section class="glass p-6 rounded-2xl shadow-2xl border border-white/60">
+        <h2 class="text-xl font-semibold mb-4">Enter Flight Details</h2>
+
+        <form id="predictForm" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Airline</label>
+              <select id="airline" class="w-full rounded-md p-2 border">
+                <option>SpiceJet</option>
+                <option>AirAsia</option>
+                <option>Vistara</option>
+                <option>GO_FIRST</option>
+                <option>Indigo</option>
+                <option>Air_India</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Class</label>
+              <select id="class" class="w-full rounded-md p-2 border">
+                <option value="Select Class">Select Class</option>
+                <option>Economy</option>
+                <option>Business</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Source City</label>
+              <select id="source_city" class="w-full rounded-md p-2 border">
+                <option>Delhi</option>
+                <option>Mumbai</option>
+                <option>Bangalore</option>
+                <option>Kolkata</option>
+                <option>Hyderabad</option>
+                <option>Chennai</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Destination City</label>
+              <select id="destination_city" class="w-full rounded-md p-2 border">
+                <option>Delhi</option>
+                <option>Mumbai</option>
+                <option>Bangalore</option>
+                <option>Kolkata</option>
+                <option>Hyderabad</option>
+                <option>Chennai</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Departure Time</label>
+              <select id="departure_time" class="w-full rounded-md p-2 border">
+                <option>Select Time</option>
+                <option>Early_Morning</option>
+                <option>Morning</option>
+                <option>Afternoon</option>
+                <option>Evening</option>
+                <option>Night</option>
+                <option>Late_Night</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Arrival Time</label>
+              <select id="arrival_time" class="w-full rounded-md p-2 border">
+                <option>Select Time</option>
+                <option>Early_Morning</option>
+                <option>Morning</option>
+                <option>Afternoon</option>
+                <option>Evening</option>
+                <option>Night</option>
+                <option>Late_Night</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Duration (hrs)</label>
+              <input id="duration" type="number" min="1" max="49" value="1" class="w-full rounded-md p-2 border" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Days Left</label>
+              <input id="days_left" type="number" min="0" max="365" value="1" class="w-full rounded-md p-2 border" />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium mb-1">Stops</label>
+              <select id="stops" class="w-full rounded-md p-2 border">
+                <option>Select Stops</option>
+                <option>0</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select>
+            </div>
+
+          </div>
+
+          <div class="flex items-center gap-3 mt-2">
+            <button id="predictBtn" type="submit"
+                    class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300">
+              <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                   stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                         d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              Predict Fare
+            </button>
+
+            <button id="resetBtn" type="button" class="px-4 py-2 border rounded-lg text-sm bg-white/50 hover:bg-white/80 transition">Reset</button>
+
+            <div id="loading" class="ml-3 hidden items-center gap-2 text-sm text-indigo-600">
+              <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"></path>
+              </svg>
+              Predicting...
+            </div>
+          </div>
+
+        </form>
+
+        <p class="mt-4 text-xs text-slate-500">Tip: Use realistic inputs to get better predictions.</p>
+      </section>
+
+      <aside class="space-y-6">
+
+        <div id="resultCard" class="p-6 rounded-2xl shadow-xl glass border border-white/60 hidden">
+          <div class="flex items-center justify-between">
+            <h3 class="text-lg font-semibold">Prediction</h3>
+            <div class="text-sm text-slate-500">Model: FlightFare-v1</div>
+          </div>
+
+          <div class="mt-4">
+            <div id="price" class="text-4xl font-bold text-indigo-600">₹ —</div>
+            <div id="subInfo" class="mt-2 text-sm text-slate-600">Confidence: <span id="confidence">—</span></div>
+          </div>
+
+          <div class="mt-4 grid grid-cols-2 gap-2 text-sm text-slate-700">
+            <div><strong>Route</strong><div id="route">—</div></div>
+            <div><strong>Duration</strong><div id="showDuration">— hrs</div></div>
+            <div><strong>Stops</strong><div id="showStops">—</div></div>
+            <div><strong>Days Left</strong><div id="showDays">—</div></div>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl shadow-lg bg-white">
+          <h4 class="font-semibold mb-2">How it works</h4>
+          <ol class="text-sm text-slate-600 space-y-2 list-decimal ml-5">
+            <li>Enter route & details → click <strong>Predict Fare</strong>.</li>
+            <li>Frontend sends data to your FastAPI `/predict` endpoint.</li>
+            <li>Model returns predicted fare → shown here with a small summary.</li>
+          </ol>
+        </div>
+
+        <div class="p-4 rounded-xl text-sm text-slate-600 bg-white/70 shadow-lg">
+          <div>Made with ❤️ by <strong>Kishlay Kumar</strong> — <span class="text-xs">FastAPI + ML model</span></div>
+        </div>
+      </aside>
+
+    </main>
+
+    <footer class="mt-10 text-center text-xs text-indigo-100 opacity-80">
+      Pro tip: For production host your FastAPI and enable HTTPS, then set <code>API_URL</code> accordingly.
+    </footer>
+  </div>
+
+  <script>
+    // Update this to your FastAPI endpoint
+    const API_URL = "http://127.0.0.1:8000/predict";
+
+    const form = document.getElementById("predictForm");
+    const loading = document.getElementById("loading");
+    const resultCard = document.getElementById("resultCard");
+    const priceEl = document.getElementById("price");
+    const routeEl = document.getElementById("route");
+    const showDuration = document.getElementById("showDuration");
+    const showStops = document.getElementById("showStops");
+    const showDays = document.getElementById("showDays");
+    const confidence = document.getElementById("confidence");
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      form.reset();
+      resultCard.classList.add("hidden");
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // pick values
+      const airline = document.getElementById("airline").value;
+      const source_city = document.getElementById("source_city").value;
+      const destination_city = document.getElementById("destination_city").value;
+      const departure_time = document.getElementById("departure_time").value;
+      const arrival_time = document.getElementById("arrival_time").value;
+      const class_ = document.getElementById("class").value;
+      const duration = Number(document.getElementById("duration").value) || 1;
+      const days_left = Number(document.getElementById("days_left").value) || 1;
+      const stops = document.getElementById("stops").value;
+
+      // basic validation
+      if (!airline || !source_city || !destination_city || departure_time === "Select Time" || arrival_time === "Select Time" || class_ === "Select Class" || stops === "Select Stops") {
+        alert("Please fill all fields properly.");
+        return;
+      }
+      if (source_city === destination_city) {
+        alert("Source and destination cannot be the same.");
+        return;
+      }
+
+      // show loader
+      loading.classList.remove("hidden");
+      resultCard.classList.add("hidden");
+
+      // Construct request body
+      // NOTE: send both 'class' and 'class_' to be compatible with various backend names
+      const body = {
+        airline,
+        source_city,
+        destination_city,
+        departure_time,
+        arrival_time,
+        "class": class_,
+        "class_": class_,
+        duration,
+        days_left,
+        stops
+      };
+
+      try {
+        const resp = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+
+        if (!resp.ok) {
+          const txt = await resp.text();
+          throw new Error(`API error ${resp.status}: ${txt}`);
+        }
+
+        const json = await resp.json();
+
+        // Expecting a response like { "Predicted Price": 1234 } or { "predicted_price": 1234 }
+        // Be flexible in parsing:
+        const price = json["Predicted Price"] ?? json["predicted_price"] ?? json["price"] ?? json["price_pred"] ?? null;
+
+        // Optional: model could return additional meta like confidence
+        // const conf = json["confidence"] ?? json["confidence_score"] ?? null;
+        // Optional: model could return additional meta like confidence
+
+        const conf = json["confidence"] ?? json["confidence_score"] ?? null;
+
+//         if (price === null) {
+        if (price === null) {
+          throw new Error("Unexpected API response: " + JSON.stringify(json));
+        }
+
+        // Display
+        priceEl.textContent = `₹ ${Number(price).toLocaleString()}`;
+        routeEl.textContent = `${source_city} → ${destination_city} (${airline})`;
+        showDuration.textContent = `${duration}`;
+        showStops.textContent = `${stops}`;
+        showDays.textContent = `${days_left}`;
+        confidence.textContent = conf ? `${conf}` : "N/A";
+
+        resultCard.classList.remove("hidden");
+        
+        /* NEW THEME CHANGE:
+          Replaced 'jiggle' with 'pop-in' for a smoother effect.
+        */
+        resultCard.classList.add("pop-in");
+        setTimeout(() => resultCard.classList.remove("pop-in"), 500); // 500ms matches animation
+
+      } catch (err) {
+        console.error(err);
+        alert("Prediction failed: " + err.message);
+      } finally {
+        loading.classList.add("hidden");
+      }
+    });
+  </script>
+</body>
+</html>
