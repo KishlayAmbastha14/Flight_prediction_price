@@ -46,14 +46,22 @@ Source: Indian Flight Dataset from Kaggle
 ## 🧩 Project Structure
 
 Flight-Price-Prediction/
+
 │
 ├── api.py # FastAPI app file (main backend logic)
+|
 ├── models/
+| |
 │ └── flight_model.pkl # Trained RandomForest model
+|
 ├── static/
+| |
 │ └── index.html # Frontend interface
+|
 ├── notebooks/ # Jupyter notebooks (EDA, model training)
+|
 ├── README.md
+|
 └── requirements.txt
 
 
@@ -89,29 +97,29 @@ http://127.0.0.1:8000/
 
 1️⃣ Initial Cleaning
 
-. Checked dataset shape, nulls, and duplicates
+- Checked dataset shape, nulls, and duplicates
 
-. Dropped unnamed columns
+- Dropped unnamed columns
 
 2️⃣ Exploratory Data Analysis (EDA)
 
-Visualized distributions and outliers using Matplotlib & Seaborn
+- Visualized distributions and outliers using Matplotlib & Seaborn
 
-Plots used: kdeplot, histplot, boxplot
+- Plots used: kdeplot, histplot, boxplot
 
 3️⃣ Feature Engineering & Selection
 
-Dropped non-informative flight column
+- Dropped non-informative flight column
 
-Identified categorical and numerical features for encoding
+- Identified categorical and numerical features for encoding
 
 4️⃣ Encoding & Scaling
 
-OneHotEncoder for nominal categorical features
+- OneHotEncoder for nominal categorical features
 
-OrdinalEncoder for ordinal features
+- OrdinalEncoder for ordinal features
 
-StandardScaler for numerical features
+## StandardScaler for numerical features
 
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
@@ -195,4 +203,5 @@ Kishlay Kumar
 📫 Email: kishlaykumar087@gmail.com
 
 💻 Exploring: Data Science, ML, GenAI, and RAG
+
 🌱 Currently learning: AI/ML, LLMs, and FastAPI
