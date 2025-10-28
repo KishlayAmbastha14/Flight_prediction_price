@@ -2,60 +2,96 @@
 
 ## 📌 Project Overview
 
-This project predicts flight ticket prices for Indian domestic airlines based on multiple features such as airline, source city, departure time, stops, arrival time, destination city, travel class, flight duration, and days left until departure.
+This project predicts flight ticket prices for Indian domestic airlines based on multiple features such as airline, source city, departure time, stops, arrival time, destination city, travel class, flight duration, and days left until departure.  
 The model uses Random Forest Regression along with a preprocessing pipeline to handle categorical and numerical features.
 
 ### 🎯 Objective
 
 The main goal is to accurately predict flight prices so that travelers can make informed decisions and plan their bookings effectively.
 
-### 📂 Dataset
+---
+
+## 📂 Dataset
 
 Source: Indian Flight Dataset from Kaggle
 
 #### Features:
+- airline  
+- source_city  
+- departure_time  
+- stops  
+- arrival_time  
+- destination_city  
+- class  
+- duration  
+- days_left  
 
-airline
+**Target Variable:** price  
+> Note: Column `flight` was dropped (non-informative identifiers like UK-82, AI-43).
 
-source_city
-
-departure_time
-
-stops
-
-arrival_time
-
-destination_city
-
-class
-
-duration
-
-days_left
-
-Target Variable: price
-
-Note: Column flight was dropped (non-informative identifiers like UK-82, AI-43).
+---
 
 ## 🛠️ Tools & Technologies
 
-Programming Language: Python
+**Programming Language:** Python  
+**Libraries:** Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn, FastAPI  
+**Model:** RandomForestRegressor  
+**Preprocessing:** ColumnTransformer (OneHotEncoder, OrdinalEncoder, StandardScaler)  
+**Pipeline:** Scikit-Learn Pipeline (preprocessing + model training)  
+**Frontend:** HTML (served via FastAPI `static` folder)
 
-Libraries: Pandas, NumPy, Matplotlib, Seaborn, Scikit-learn
+---
 
-Model: RandomForestRegressor
 
-Preprocessing: ColumnTransformer (OneHotEncoder, OrdinalEncoder, StandardScaler)
+## 🧩 Project Structure
 
-Pipeline: Scikit-Learn Pipeline (preprocessing + model training)
+Flight-Price-Prediction/
+│
+├── api.py # FastAPI app file (main backend logic)
+├── models/
+│ └── flight_model.pkl # Trained RandomForest model
+├── static/
+│ └── index.html # Frontend interface
+├── notebooks/ # Jupyter notebooks (EDA, model training)
+├── README.md
+└── requirements.txt
+
+
+
+
+---
+
+## ⚙️ API Integration (Newly Added)
+
+After building the model, a **FastAPI** server was created to expose a REST API for prediction.
+
+- **File:** `api.py`  
+- **Framework:** FastAPI  
+- **Purpose:** To serve predictions using the trained model (`flight_model.pkl`)  
+- **Frontend:** A simple web UI (`index.html`) inside the `static/` folder interacts with the API.
+
+### 🧠 How It Works
+1. User inputs flight details in `index.html`
+2. The form sends data (POST request) to FastAPI endpoint `/predict`
+3. FastAPI loads the model and preprocessing pipeline
+4. The model predicts the ticket price and returns it to the frontend
+
+### 🚀 Run the App
+```bash
+uvicorn api:app --reload
+http://127.0.0.1:8000/
+```
+
 
 ## Data Preprocessing & EDA
 
+🧠 Data Preprocessing & EDA
+
 1️⃣ Initial Cleaning
 
-Checked dataset shape, nulls, and duplicates
+. Checked dataset shape, nulls, and duplicates
 
-Dropped unnamed columns
+. Dropped unnamed columns
 
 2️⃣ Exploratory Data Analysis (EDA)
 
@@ -140,3 +176,23 @@ R² Score: 0.98
 ![Python](https://img.shields.io/badge/Python-3.10-blue) 
 ![scikit-learn](https://img.shields.io/badge/ML-scikit--learn-orange)
 ![RandomForest](https://img.shields.io/badge/Model-RandomForest-green)
+
+
+
+# 🚀 Future Enhancements
+
+Add support for real-time flight APIs
+
+Deploy on Render / HuggingFace Spaces
+
+Integrate with React frontend
+
+Add model explainability (SHAP / LIME)
+
+# 👨‍💻 Author
+
+Kishlay Kumar
+📫 Email: kishlaykumar087@gmail.com
+
+💻 Exploring: Data Science, ML, GenAI, and RAG
+🌱 Currently learning: AI/ML, LLMs, and FastAPI
