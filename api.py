@@ -15,7 +15,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# -
+
+
+import os
+import requests
+import pickle
+
+
+MODEL_PATH = "flight_model.pkl"
+MODEL_URL = "https://huggingface.co/kishlayambastha/flight-price-model/resolve/main/flights_new.pkl"
+
+# download model if not present
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model from Hugging Face...")
+    r = requests.get(MODEL_URL)
+    open(MODEL_PATH, 'wb').write(r.content)
+    print("Model downloaded!")
+
+with open(MODEL_PATH, "rb") as f:
+    model = pickle.load(f)
+
 
 # with open("flights_new.pkl","rb") as f:
 #     model = pickle.load(f)
