@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 from pydantic import BaseModel,Field,conint,confloat
 from fastapi.middleware.cors import CORSMiddleware
-import pickle
 import pandas as pd
 from typing import Literal
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+import os
+import requests
+import pickle
+
 
 app = FastAPI(title = "FLIGHT PRICE PREDICTIONS API")
 
@@ -16,10 +21,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-import os
-import requests
-import pickle
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open(os.path.join("static", "new_index.html"), "r", encoding="utf-8") as f:
+        return f.read()
 
 
 MODEL_PATH = "flight_model.pkl"
@@ -38,6 +45,15 @@ with open(MODEL_PATH, "rb") as f:
 
 # with open("flights_new.pkl","rb") as f:
 #     model = pickle.load(f)
+
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open(os.path.join("static", "index.html"), "r", encoding="utf-8") as f:
+        return f.read()
+
 
 @app.get("/")
 async def flights():
